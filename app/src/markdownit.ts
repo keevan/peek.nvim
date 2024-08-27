@@ -46,8 +46,14 @@ md.renderer.rules.link_open = (tokens, idx, options) => {
   const href = token.attrGet('href');
 
   if (href?.startsWith('#')) {
-    token.attrSet('onclick', `location.hash='${href}'`);
-    token.attrSet('href', 'javascript:return');
+
+    if (app === 'webview') {
+      token.attrSet('onclick', `location.hash='${href}'`);
+      token.attrSet('href', 'javascript:return');
+    } else {
+      // e.g. browser will simply set it as the anchor
+      token.attrSet('href', href);
+    }
   } else {
     const link = app === 'webview' ? 'javascript:return' : href;
     token.attrSet('href', link || 'javascript:return');
